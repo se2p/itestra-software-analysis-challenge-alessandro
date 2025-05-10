@@ -16,6 +16,7 @@ public class SourceCodeAnalyser {
      */
     public static Map<String, Output> analyse(Input input) {
         // TODO insert your Code here.
+        System.out.println(input.getInputDirectory().isDirectory());
 
         // For each file put one Output object to your result map.
         // You can extend the Output object using the functions lineNumberBonus(int), if you did
@@ -38,7 +39,8 @@ public class SourceCodeAnalyser {
             .required(false)
             .build();
 
-    public static final String DEFAULT_INPUT_DIR = String.join(File.separator , Arrays.asList("..", "CodeExamples", "src", "main", "java"));
+    // Arrays.asList("..", "CodeExamples", "src", "main", "java")) doesn't work
+    public static final String DEFAULT_INPUT_DIR = String.join(File.separator , Arrays.asList("CodeExamples", "src", "main", "java"));
 
     private static Input parseInput(String[] args) {
         Options options = new Options();
