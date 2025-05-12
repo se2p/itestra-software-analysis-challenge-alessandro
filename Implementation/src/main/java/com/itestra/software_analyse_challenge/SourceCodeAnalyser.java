@@ -58,12 +58,24 @@ public class SourceCodeAnalyser {
             int lineCount = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if (!line.startsWith("//") && !line.isEmpty()) {
+
+                boolean isComment = line.startsWith("/**");
+
+                while(isComment) {
+                    line = scanner.nextLine();
+                    if (line.contains("*/")) {
+                        isComment = false;
+                    }
+                }
+
+                if (!line.contains("//") && !line.isEmpty()) {
                     lineCount++;
                 }
+
             }
-            result.put(file.getName(), new Output(lineCount, null));
+            result.put(file.getPath(), new Output(lineCount, null));
         } catch (FileNotFoundException e) {
+
             e.printStackTrace();
         }
     }
