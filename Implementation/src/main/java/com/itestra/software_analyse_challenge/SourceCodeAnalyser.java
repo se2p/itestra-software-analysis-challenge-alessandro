@@ -59,16 +59,20 @@ public class SourceCodeAnalyser {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 
-                boolean isComment = line.startsWith("/**");
+                boolean isComment = line.trim().startsWith("/**");
 
                 while(isComment) {
                     line = scanner.nextLine();
                     if (line.contains("*/")) {
                         isComment = false;
+                        line = scanner.nextLine();
                     }
                 }
 
-                if (!line.contains("//") && !line.isEmpty()) {
+                if (!line.trim().startsWith("//") && !line.isEmpty()) {
+                    if (file.getName().contains("Function.java")) {
+                        System.out.println(line + ": " + lineCount);
+                    }
                     lineCount++;
                 }
 
