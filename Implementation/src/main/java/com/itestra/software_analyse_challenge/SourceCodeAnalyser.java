@@ -3,6 +3,7 @@ package com.itestra.software_analyse_challenge;
 import org.apache.commons.cli.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,14 +16,72 @@ public class SourceCodeAnalyser {
      * @return mapping from filename -> {@link Output} object.
      */
     public static Map<String, Output> analyse(Input input) {
-        // TODO insert your Code here.
-        System.out.println(input.getInputDirectory().isDirectory());
+        // Create a map to store the output for each file
+        Map<String, Output> result = new HashMap<>();
 
+        List<File> childrenFiles = new ArrayList<>();
+
+        // Traverse the input directory and collect all files
+        traverseDirectory(input.getInputDirectory().listFiles(), childrenFiles);
+
+        for(File file : childrenFiles) {
+            countSourceCodeLines(file, result);
+        }
         // For each file put one Output object to your result map.
         // You can extend the Output object using the functions lineNumberBonus(int), if you did
         // the bonus exercise.
+        return result;
+    }
 
-        return Collections.emptyMap();
+    /**
+     * @AI-GENERATED
+     * Traverses a directory and collects all files in a list.
+     *
+     * @param directory the directory to traverse
+     * @param result    the list to store the files
+     */
+    public static void traverseDirectory(File[] directory, List<File> result) {
+        for (File file : directory) {
+            if (file.isDirectory()) {
+                File[] children = file.listFiles();
+                if (children != null) {
+                    traverseDirectory(children, result); // Recursive call
+                }
+            } else {
+                result.add(file); // It's a file
+            }
+        }
+    }
+
+    public static void countSourceCodeLines(File file, Map<String, Output> result) {
+        try (Scanner scanner = new Scanner(file)) {
+            int lineCount = 0;
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.startsWith("//") && !line.isEmpty()) {
+                    lineCount++;
+                }
+            }
+            result.put(file.getName(), new Output(lineCount, null));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void findDependencies(
+            File file,
+            Map<String, Output> result,
+            String line) {
+        String[] dependencyNames = new String[] {
+            "cronutils", "fig", "spark"
+        };
+
+
+        if (line.startsWith("import")) {
+            String dependency = line.substring(line.indexOf(" ") + 1, line.indexOf(";"));
+            //result.put(file.getName(), new Output(0, dependency));
+        }
+
     }
 
 
