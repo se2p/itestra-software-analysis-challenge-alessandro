@@ -69,7 +69,6 @@ public class SourceCodeAnalyser {
     }
 
     public static void findDependencies(
-            File file,
             Map<String, Output> result,
             String line) {
         String[] dependencyNames = new String[] {
