@@ -76,7 +76,6 @@ public class SourceCodeAnalyser {
                  * @AI-GENERATED REGEX
                  */
                 if (line.matches("\\s*public\\s+(?!void)\\w+(<.*>)?\\s+get[A-Z]\\w*\\s*\\(\\s*\\)\\s*\\{?.*")) {
-                    System.out.println("Found getter: " + line);
                     lineCountSourceCode.incrementAndGet();
                     // Case 1: inline getter
                     if (line.contains("{") && line.contains("}")) {
@@ -98,7 +97,6 @@ public class SourceCodeAnalyser {
             output.lineNumberBonus(lineCountWithouthGettersBlocks.get());
             result.put(file.getPath(), output);
         } catch (FileNotFoundException e) {
-
             e.printStackTrace();
         }
     }
@@ -126,7 +124,7 @@ public class SourceCodeAnalyser {
                 while (isCommentBlock) {
                     if (scanner.hasNextLine()) {
                         line = scanner.nextLine();
-                        lineCountSourceCode.incrementAndGet(); // add even when we're in the comment block
+                        lineCountSourceCode.incrementAndGet(); // add to the normal count line
                         if (line.trim().startsWith("*/")) {
                             isCommentBlock = false;
                         }
@@ -150,13 +148,24 @@ public class SourceCodeAnalyser {
             String line) {
         List<String> projectNames = Arrays.asList("cronutils", "fig", "spark");
 
-        // get the dependency name
-        String fileDependency = Arrays.stream(Arrays.stream(line.split(" ")).toList().get(1).split("\\."))
-                .toList()
-                .get(0);
+        // System.out.println(Arrays.stream(Arrays.stream(line.split(" ")).toList().get(1).split("\\.")).toList());
 
-        if (projectNames.contains(fileDependency) && !foundDependencies.contains(fileDependency)) {
-            foundDependencies.add(fileDependency);
+        // get the dependency name
+
+        List<String> fileListDependencies = Arrays.stream(Arrays.stream(line.split(" ")).toList().get(1).split("\\."))
+                .toList();
+
+        String fileDependencyProject = fileListDependencies.getFirst(); // returns the CodeExample directory name
+        String fileDependencyProjectClass = fileListDependencies.getLast().substring(
+                0,
+                fileListDependencies.getLast().length() - 1 // removes final ";"
+        ); // returns the class of CodeExample directory
+
+        // creates a string with the name of the class and the project name
+        String finalDependencyName = fileDependencyProject + "." + fileDependencyProjectClass;
+
+        if (projectNames.contains(fileDependencyProject) && !foundDependencies.contains(finalDependencyName)) {
+            foundDependencies.add(finalDependencyName);
         }
         /* SERVED AS A WAY TO UNDERSTAND IF THE DEPENDENCY ARE ONLY PRESENT IN THE SAME PROJECT
            FOR INSTANCE, CRONUTILS DEPENDS ONLY ON CRONUTILS
