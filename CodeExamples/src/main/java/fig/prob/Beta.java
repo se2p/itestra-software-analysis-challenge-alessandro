@@ -49,7 +49,7 @@ public class Beta implements BetaInterface {
     return sum;
   }
 
-  public double getAlpha() { return alpha; }
+  public double getAlpha() { return alpha;}
   public double getBeta() { return beta; }
   public double getMean() { return alpha/(alpha+beta); }
   public double getMode() {
